@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phishing Site Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #eee;
+            margin-top: 30px;
+        }
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #eee;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #eee;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phishing Site Checker</h1>
+    <form id="phishingForm">
+        <label for="feature">Enter a URL:</label>
+        <input type="text" id="feature" name="feature" required>
+        <button type="submit">Check</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById("phishingForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting traditionally
+    
+            var form = this;
+            var feature = form.elements["feature"].value;
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/predict?feature=" + encodeURIComponent(feature), true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var resultDiv = document.getElementById("result");
+                    var resultText = "Result: " + response.result;
+                    resultDiv.innerHTML = resultText;
+                    if (response.result === "This is a Phishing Site") {
+                        resultDiv.style.color = "#ff0000"; // Red color for phishing site
+                    } else {
+                        resultDiv.style.color = "rgb(16 231 16)"; // Green color for not phishing site
+                    }
+                }
+            };
+            xhr.send();
+    
+            return false; // Prevent the form from submitting and changing the URL
+        });
+    </script>
+    
+</body>
+</html>
